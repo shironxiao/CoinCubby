@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- CoinCubby Palette -->
+    <color name="bg_background">#E9F5E1</color>
+    <color name="bg_header">#5C8262</color>
+    <color name="bg_card">#D2E3C2</color>
+    <color name="bg_section_label">#B5D68E</color>
+    <color name="color_top_up">#1E1E1E</color>
+    <color name="text_primary">#1E1E1E</color>
+    <color name="text_secondary">#4D4D4D</color>
+    <color name="bg_access_code">#262626</color>
+    <color name="accent_green">#B5D68E</color>
+
+    <color name="status_available_bg">#D4EFDF</color>
+    <color name="status_available_icon">#27AE60</color>
+    <color name="status_occupied_bg">#F5B7B1</color>
+    <color name="status_occupied_icon">#C0392B</color>
+    <color name="status_pending_bg">#F5CBA7</color>
+    <color name="status_pending_icon">#E67E22</color>
+
+    <!-- Dashboard Color Mappings -->
+    <color name="cc_header_bg">#5C8262</color>
+    <color name="cc_brand_dark">#B5D68E</color>
+    <color name="cc_card_bg">#D2E3C2</color>
+    <color name="cc_text_secondary">#4D4D4D</color>
+    <color name="cc_text_primary">#1E1E1E</color>
+    <color name="cc_top_up_btn">#1E1E1E</color>
+    <color name="cc_section_label_text">#1E1E1E</color>
+    
+    <!-- New Dashboard Colors -->
+    <color name="dashboard_dark_green">#5C785C</color>
+    <color name="dashboard_light_green">#E9F5E1</color>
+    <color name="rental_card_bg">#CCD9B8</color>
+    <color name="access_code_bg">#202020</color>
+</resources>
