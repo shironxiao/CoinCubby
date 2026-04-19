@@ -155,10 +155,17 @@ public class LoginActivity extends AppCompatActivity {
     private void handleAuthError(String responseBody) {
         try {
             JSONObject json = new JSONObject(responseBody);
+            // Supabase returns 'error' and 'error_description'
+            String error = json.optString("error", "");
             String msg = json.optString("error_description",
                     json.optString("msg",
                             json.optString("message", "Invalid email or password.")));
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+
+            if (error.equals("invalid_grant") && msg.contains("Email not confirmed")) {
+                Toast.makeText(this, "Please confirm your email before logging in.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            }
         } catch (JSONException e) {
             Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
         }

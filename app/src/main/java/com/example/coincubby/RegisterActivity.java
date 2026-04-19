@@ -202,32 +202,100 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private void onRegistrationSuccess(String responseBody) {
         try {
-            JSONObject json        = new JSONObject(responseBody);
-            String     accessToken = json.optString("access_token", "");
+            JSONObject json = new JSONObject(responseBody);
+            String accessToken = json.optString("access_token", "");
+            String userId = json.optJSONObject("user") != null
+                    ? json.getJSONObject("user").optString("id", "")
+                    : "";
 
-            if (accessToken.isEmpty()) {
-                // Email confirmation required
-                Toast.makeText(this,
-                        "Account created! Please check your email to confirm your account.",
-                        Toast.LENGTH_LONG).show();
+            // ── Insert into customers table directly ──
+            if (!userId.isEmpty()) {
+                insertCustomerRecord(userId, accessToken);
             } else {
-                // Confirmed immediately — you can persist the token here if needed
-                Toast.makeText(this,
-                        "Account created successfully! Welcome aboard.",
-                        Toast.LENGTH_LONG).show();
+                // If no userId, something went wrong with the response structure
+                Toast.makeText(this, "Registration successful, but profile could not be created.", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
             }
 
-            // Navigate back to Login either way
-            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            finish();
-
         } catch (JSONException e) {
-            // Shouldn't happen on a 2xx, but handle gracefully
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
         }
     }
 
+    private void insertCustomerRecord(String userId, String accessToken) {
+        String firstName = etFirstName.getText().toString().trim();
+        String lastName  = etLastName.getText().toString().trim();
+        String email     = etEmail.getText().toString().trim();
+        String password  = etPassword.getText().toString(); // Added to match your table
+
+        JSONObject body = new JSONObject();
+        try {
+            // Matching the columns visible in your screenshot exactly
+            body.put("customer_id", userId);
+            body.put("password",    password); // Included because it exists in your customers table
+            body.put("full_name",   firstName + " " + lastName);
+            body.put("email",       email);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .url(SUPABASE_URL + "/rest/v1/customers")
+                .addHeader("apikey",        SUPABASE_ANON)
+                .addHeader("Content-Type",  "application/json")
+                .addHeader("Prefer",        "return=minimal")
+                .post(RequestBody.create(body.toString(), JSON));
+
+        if (!accessToken.isEmpty()) {
+            requestBuilder.addHeader("Authorization", "Bearer " + accessToken);
+        } else {
+            // If no access token (email confirmation on), try using the anon key as a bearer token
+            // This requires an RLS policy that allows 'anon' role to insert.
+            requestBuilder.addHeader("Authorization", "Bearer " + SUPABASE_ANON);
+        }
+
+        Request request = requestBuilder.build();
+
+        http.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                android.util.Log.e("SUPABASE_INSERT", "Network error: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(RegisterActivity.this,
+                            "Account created but profile save failed.",
+                            Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    finish();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String errorBody = response.body() != null ? response.body().string() : "";
+                if (!response.isSuccessful()) {
+                    android.util.Log.e("SUPABASE_INSERT", "Error " + response.code() + ": " + errorBody);
+                }
+
+                runOnUiThread(() -> {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(RegisterActivity.this,
+                                "Account and profile created successfully!",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        // This usually happens due to Row Level Security (RLS) or schema mismatch
+                        Toast.makeText(RegisterActivity.this,
+                                "Account created! (Profile record pending)",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    finish();
+                });
+            }
+        });
+    }
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void handleAuthError(String responseBody) {
