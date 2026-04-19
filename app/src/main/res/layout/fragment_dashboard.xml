@@ -301,7 +301,10 @@
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="16dp"
                     android:src="@drawable/img"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="fitCenter"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
             </LinearLayout>
 
         </LinearLayout>

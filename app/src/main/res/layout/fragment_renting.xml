@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_background">
+    android:background="@android:color/white">
 
     <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,34 +15,45 @@
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="40dp"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
             android:background="@drawable/bg_logo_pill"
-            android:padding="10dp"
+            android:backgroundTint="#D1E2B8"
+            android:padding="8dp"
             android:src="@drawable/ic_person"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:tint="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Renting"
+            android:text="My Rental"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_logo_pill"
+            android:backgroundTint="#D1E2B8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:clipToPadding="false"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
 
@@ -50,53 +61,157 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingBottom="160dp">
+            android:padding="20dp">
 
-            <!-- Locker Grid -->
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:useDefaultMargins="true"
-                android:alignmentMode="alignMargins"
-                android:padding="8dp">
-
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_s1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_s2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_s3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_s4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_m1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_m2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_l1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-                <include layout="@layout/view_locker_item" android:id="@+id/locker_l2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="8dp" />
-
-            </GridLayout>
-
-            <!-- Configuration Fragments Container -->
+            <!-- See History Link -->
             <LinearLayout
-                android:id="@+id/configContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical" />
-
-            <Button
-                android:id="@+id/btnConfirm"
+                android:id="@+id/btnSeeHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:backgroundTint="@color/cc_top_up_btn"
-                android:text="Confirm"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:cornerRadius="16dp" />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <View
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See History"
+                    android:textColor="#757575"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#757575" />
+            </LinearLayout>
+
+            <!-- Main Rental Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="160dp" />
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="8dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Locker"
+                                android:textColor="#757575"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/tvLockerId"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="S1"
+                                android:textColor="#555555"
+                                android:textSize="48sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/bg_wallet_pill"
+                            android:backgroundTint="#C5E1A5"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="6dp"
+                            android:text="Active"
+                            android:textColor="#444444"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <!-- Details List -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+
+                        <!-- Access Code -->
+                        <include
+                            layout="@layout/item_rental_detail"
+                            android:id="@+id/rowAccessCode" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#EEEEEE"
+                            android:layout_marginVertical="12dp" />
+
+                        <!-- Started -->
+                        <include
+                            layout="@layout/item_rental_detail"
+                            android:id="@+id/rowStarted" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#EEEEEE"
+                            android:layout_marginVertical="12dp" />
+
+                        <!-- Expires -->
+                        <include
+                            layout="@layout/item_rental_detail"
+                            android:id="@+id/rowExpires" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#EEEEEE"
+                            android:layout_marginVertical="12dp" />
+
+                        <!-- Size -->
+                        <include
+                            layout="@layout/item_rental_detail"
+                            android:id="@+id/rowSize" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#EEEEEE"
+                            android:layout_marginVertical="12dp" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnReturnLocker"
+                        android:layout_width="200dp"
+                        android:layout_height="55dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="#1A1A1A"
+                        android:text="Return Locker"
+                        android:textAllCaps="false"
+                        android:textColor="#D1E2B8"
+                        android:textStyle="bold"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,16 +15,27 @@ public class DashboardFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        // ── Top Up button ─────────────────────────────────────────────────────
+        // Top Up button
         TextView btnTopUp = view.findViewById(R.id.btnTopUpDashboard);
         btnTopUp.setOnClickListener(v -> {
-            // Navigate to Wallet fragment for top up
             if (getActivity() instanceof MainActivity) {
                 ((MainActivity) getActivity()).navigateToWallet();
             }
+        });
+
+        // Locker availability image → go to RentALocker
+        ImageView imgLocker = view.findViewById(R.id.imgLockerAvailability);
+        imgLocker.setOnClickListener(v -> {
+            if (!isAdded()) return;
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new RentALocker(), "RentALocker")
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
