@@ -70,11 +70,13 @@
                         android:textSize="28sp"
                         android:textStyle="bold" />
 
+                    <!-- ✅ This TextView now has an ID so DashboardFragment can update it -->
                     <TextView
+                        android:id="@+id/tvWelcomeName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-4dp"
-                        android:text="Angelo Malaluan!"
+                        android:text="there!"
                         android:textColor="@color/black"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -187,11 +189,11 @@
                     android:src="@drawable/ic_locker_machine"
                     android:scaleType="fitCenter" />
 
-                <include 
-                    layout="@layout/view_status_cards" 
+                <include
+                    layout="@layout/view_status_cards"
                     android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="16dp" 
-                    android:layout_width="match_parent" 
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 

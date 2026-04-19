@@ -15,9 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.coincubby.MainActivity;
-import com.example.coincubby.R;
-import com.example.coincubby.RegisterActivity;
+import com.example.coincubby.shared.SessionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +50,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        // ── If already logged in, skip login screen entirely ──────────────────
+        if (SessionManager.isLoggedIn(this)) {
+            goToMain();
+            return;
+        }
+
         setContentView(R.layout.login);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -138,15 +143,34 @@ public class LoginActivity extends AppCompatActivity {
             String     accessToken = json.optString("access_token", "");
 
             if (!accessToken.isEmpty()) {
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                // ── Extract user info from the Supabase response ──────────────
+                String userId   = "";
+                String fullName = "";
+                String email    = "";
+
+                JSONObject userObj = json.optJSONObject("user");
+                if (userObj != null) {
+                    userId = userObj.optString("id", "");
+                    email  = userObj.optString("email", "");
+
+                    // full_name was stored in user_metadata during registration
+                    JSONObject meta = userObj.optJSONObject("user_metadata");
+                    if (meta != null) {
+                        fullName = meta.optString("full_name", "");
+                    }
+                }
+
+                // ── Save session so ProfileFragment can read it ───────────────
+                SessionManager.saveSession(this, accessToken, userId, fullName, email);
+
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                goToMain();
+
             } else {
                 Toast.makeText(this, "Login failed. No token received.", Toast.LENGTH_LONG).show();
             }
+
         } catch (JSONException e) {
             Toast.makeText(this, "Unexpected response. Try again.", Toast.LENGTH_SHORT).show();
         }
@@ -154,21 +178,28 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleAuthError(String responseBody) {
         try {
-            JSONObject json = new JSONObject(responseBody);
-            // Supabase returns 'error' and 'error_description'
-            String error = json.optString("error", "");
-            String msg = json.optString("error_description",
+            JSONObject json  = new JSONObject(responseBody);
+            String     error = json.optString("error", "");
+            String     msg   = json.optString("error_description",
                     json.optString("msg",
                             json.optString("message", "Invalid email or password.")));
 
             if (error.equals("invalid_grant") && msg.contains("Email not confirmed")) {
-                Toast.makeText(this, "Please confirm your email before logging in.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        "Please confirm your email before logging in.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
             Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void goToMain() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void setLoading(boolean loading) {

@@ -54,7 +54,7 @@
             android:padding="20dp"
             android:paddingBottom="160dp">
 
-            <!-- Profile Info -->
+            <!-- Avatar placeholder -->
             <View
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -62,20 +62,24 @@
                 android:background="@drawable/bg_wallet_card"
                 android:backgroundTint="#CCD9B8" />
 
+            <!-- Full Name — populated from customers table -->
             <TextView
+                android:id="@+id/tvProfileFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Angelo MAlaluan"
+                android:text="Loading…"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
+            <!-- Contact number (or email as fallback) -->
             <TextView
+                android:id="@+id/tvProfileContact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="+63 912 345 6789"
+                android:text=""
                 android:textColor="@color/cc_text_secondary"
                 android:textSize="14sp" />
 
@@ -97,13 +101,15 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
+                <!-- Private key derived from customer_id -->
                 <TextView
+                    android:id="@+id/tvPrivateKey"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/bg_wallet_pill"
                     android:gravity="center"
-                    android:text="COIN-2026-KUPL7"
+                    android:text="—"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -154,6 +160,7 @@
 
             <!-- Sign Out Button -->
             <Button
+                android:id="@+id/btnSignOut"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_marginTop="20dp"

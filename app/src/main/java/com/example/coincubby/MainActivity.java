@@ -25,26 +25,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0); // Keep bottom navigation flush
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
         // Initialize UI components
-        navHomeContainer = findViewById(R.id.nav_home_container);
-        navRentContainer = findViewById(R.id.nav_rent_container);
-        navWalletContainer = findViewById(R.id.nav_wallet_container);
+        navHomeContainer    = findViewById(R.id.nav_home_container);
+        navRentContainer    = findViewById(R.id.nav_rent_container);
+        navWalletContainer  = findViewById(R.id.nav_wallet_container);
         navProfileContainer = findViewById(R.id.nav_profile_container);
-        navHomeIcon = findViewById(R.id.nav_home_icon);
-        navRentIcon = findViewById(R.id.nav_rent_icon);
-        navWalletIcon = findViewById(R.id.nav_wallet_icon);
-        navProfileIcon = findViewById(R.id.nav_profile_icon);
-        navHomeText = findViewById(R.id.nav_home_text);
-        navRentText = findViewById(R.id.nav_rent_text);
-        navWalletText = findViewById(R.id.nav_wallet_text);
-        navProfileText = findViewById(R.id.nav_profile_text);
+        navHomeIcon         = findViewById(R.id.nav_home_icon);
+        navRentIcon         = findViewById(R.id.nav_rent_icon);
+        navWalletIcon       = findViewById(R.id.nav_wallet_icon);
+        navProfileIcon      = findViewById(R.id.nav_profile_icon);
+        navHomeText         = findViewById(R.id.nav_home_text);
+        navRentText         = findViewById(R.id.nav_rent_text);
+        navWalletText       = findViewById(R.id.nav_wallet_text);
+        navProfileText      = findViewById(R.id.nav_profile_text);
 
         // Load default fragment
         if (savedInstanceState == null) {
@@ -68,11 +68,17 @@ public class MainActivity extends AppCompatActivity {
             updateNavUI("Wallet");
         });
 
-        navProfileContainer.setOnClickListener(v -> {
-            loadFragment(new ProfileFragment(), "Profile");
-            updateNavUI("Profile");
-        });
+        navProfileContainer.setOnClickListener(v -> navigateToProfile());
     }
+
+    // ── Public so DashboardFragment's profile icon can call it ───────────────
+
+    public void navigateToProfile() {
+        loadFragment(new ProfileFragment(), "Profile");
+        updateNavUI("Profile");
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     private void loadFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
@@ -82,17 +88,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateNavUI(String selected) {
         // Reset all
-        resetNavItem(navHomeContainer, navHomeIcon, navHomeText);
-        resetNavItem(navRentContainer, navRentIcon, navRentText);
-        resetNavItem(navWalletContainer, navWalletIcon, navWalletText);
+        resetNavItem(navHomeContainer,    navHomeIcon,    navHomeText);
+        resetNavItem(navRentContainer,    navRentIcon,    navRentText);
+        resetNavItem(navWalletContainer,  navWalletIcon,  navWalletText);
         resetNavItem(navProfileContainer, navProfileIcon, navProfileText);
 
         if (selected.equals("Home")) {
-            selectNavItem(navHomeContainer, navHomeIcon, navHomeText);
+            selectNavItem(navHomeContainer,    navHomeIcon,    navHomeText);
         } else if (selected.equals("Rent")) {
-            selectNavItem(navRentContainer, navRentIcon, navRentText);
+            selectNavItem(navRentContainer,    navRentIcon,    navRentText);
         } else if (selected.equals("Wallet")) {
-            selectNavItem(navWalletContainer, navWalletIcon, navWalletText);
+            selectNavItem(navWalletContainer,  navWalletIcon,  navWalletText);
         } else if (selected.equals("Profile")) {
             selectNavItem(navProfileContainer, navProfileIcon, navProfileText);
         }
