@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize UI components
         navHomeContainer    = findViewById(R.id.nav_home_container);
         navRentContainer    = findViewById(R.id.nav_rent_container);
         navWalletContainer  = findViewById(R.id.nav_wallet_container);
@@ -46,13 +45,11 @@ public class MainActivity extends AppCompatActivity {
         navWalletText       = findViewById(R.id.nav_wallet_text);
         navProfileText      = findViewById(R.id.nav_profile_text);
 
-        // Load default fragment
         if (savedInstanceState == null) {
             loadFragment(new DashboardFragment(), "Dashboard");
             updateNavUI("Home");
         }
 
-        // Setup navigation listeners
         navHomeContainer.setOnClickListener(v -> {
             loadFragment(new DashboardFragment(), "Dashboard");
             updateNavUI("Home");
@@ -63,19 +60,21 @@ public class MainActivity extends AppCompatActivity {
             updateNavUI("Rent");
         });
 
-        navWalletContainer.setOnClickListener(v -> {
-            loadFragment(new WalletFragment(), "Wallet");
-            updateNavUI("Wallet");
-        });
+        navWalletContainer.setOnClickListener(v -> navigateToWallet());
 
         navProfileContainer.setOnClickListener(v -> navigateToProfile());
     }
 
-    // ── Public so DashboardFragment's profile icon can call it ───────────────
+    // ── Public navigation methods (called from fragments) ─────────────────────
 
     public void navigateToProfile() {
         loadFragment(new ProfileFragment(), "Profile");
         updateNavUI("Profile");
+    }
+
+    public void navigateToWallet() {
+        loadFragment(new WalletFragment(), "Wallet");
+        updateNavUI("Wallet");
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -87,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateNavUI(String selected) {
-        // Reset all
         resetNavItem(navHomeContainer,    navHomeIcon,    navHomeText);
         resetNavItem(navRentContainer,    navRentIcon,    navRentText);
         resetNavItem(navWalletContainer,  navWalletIcon,  navWalletText);

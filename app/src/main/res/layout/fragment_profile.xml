@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_background">
+    android:background="@android:color/white"> <!-- Changed background to white -->
 
     <!-- HEADER -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,34 +15,45 @@
 
         <ImageView
             android:id="@+id/btnHome"
-            android:layout_width="48dp"
-            android:layout_height="40dp"
+            android:layout_width="55dp"
+            android:layout_height="35dp"
             android:background="@drawable/bg_logo_pill"
-            android:padding="10dp"
+            android:backgroundTint="#D1E2B8"
+            android:padding="8dp"
             android:src="@drawable/ic_home"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:tint="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Profile"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="55dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_logo_pill"
+            android:backgroundTint="#D1E2B8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:clipToPadding="false"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header">
 
@@ -52,7 +63,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="20dp"
-            android:paddingBottom="160dp">
+            android:paddingBottom="100dp">
 
             <!-- Avatar placeholder -->
             <View
@@ -60,120 +71,135 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_wallet_card"
-                android:backgroundTint="#CCD9B8" />
+                android:backgroundTint="#D1E2B8" />
 
-            <!-- Full Name — populated from customers table -->
+            <!-- Full Name -->
             <TextView
                 android:id="@+id/tvProfileFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Loading…"
-                android:textColor="@color/black"
+                android:text="Angelo MAlaluan"
+                android:textColor="#555555"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <!-- Contact number (or email as fallback) -->
+            <!-- Contact number -->
             <TextView
                 android:id="@+id/tvProfileContact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text=""
-                android:textColor="@color/cc_text_secondary"
+                android:text="+63 912 345 6789"
+                android:textColor="#757575"
                 android:textSize="14sp" />
 
-            <!-- Private Key Section -->
-            <LinearLayout
+            <!-- Private Key Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:background="@drawable/bg_wallet_card"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="24dp">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Your Private Key"
-                    android:textColor="@color/cc_text_secondary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <!-- Private key derived from customer_id -->
-                <TextView
-                    android:id="@+id/tvPrivateKey"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_wallet_pill"
-                    android:gravity="center"
-                    android:text="—"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Use this key for quick locker access"
-                    android:textColor="@color/cc_text_secondary"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-            <!-- Change Private Key Button -->
-            <RelativeLayout
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Private Key"
+                        android:textColor="#757575"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- Key Display Box -->
+                    <TextView
+                        android:id="@+id/tvPrivateKey"
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_wallet_pill"
+                        android:backgroundTint="#C5E1A5"
+                        android:gravity="center"
+                        android:text="COIN-2026-KUPL7"
+                        android:textColor="#444444"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="Use this key for quick locker access"
+                        android:textColor="#757575"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Change Private Key Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_wallet_card"
-                android:paddingHorizontal="24dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
 
-                <ImageView
-                    android:id="@+id/ic_lock"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_lock"
-                    app:tint="@color/black" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:paddingHorizontal="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_toEndOf="@id/ic_lock"
-                    android:text="Change Private Key"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/ic_lock"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_lock"
+                        app:tint="#444444" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_chevron_right"
-                    app:tint="@color/black" />
-            </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toEndOf="@id/ic_lock"
+                        android:text="Change Private Key"
+                        android:textColor="#555555"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="#444444" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Sign Out Button -->
             <Button
                 android:id="@+id/btnSignOut"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#202020"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#1A1A1A"
                 android:text="Sign Out"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                app:cornerRadius="20dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="160dp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
