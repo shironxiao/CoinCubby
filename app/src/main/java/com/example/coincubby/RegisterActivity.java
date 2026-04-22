@@ -30,16 +30,11 @@ import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // ── Supabase credentials ──────────────────────────────────────────────────
-    // LoginActivity.java & RegisterActivity.java — change this line:
-    private static final String SUPABASE_URL = "https://cjuimxgxovdmijuenagr.supabase.co";
-
-    // And update the anon key:
+    private static final String SUPABASE_URL  = "https://cjuimxgxovdmijuenagr.supabase.co";
     private static final String SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqdWlteGd4b3ZkbWlqdWVuYWdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0MzQ0OTEsImV4cCI6MjA5MjAxMDQ5MX0.t6ixuFiD2iYzrNZsc1QjG3gpdTdBuMY37qTKzwxdg18";
 
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    // ── Views ─────────────────────────────────────────────────────────────────
     private EditText        etFirstName;
     private EditText        etLastName;
     private EditText        etEmail;
@@ -50,13 +45,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private final OkHttpClient http = new OkHttpClient();
 
-    // ─────────────────────────────────────────────────────────────────────────
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.register);   // make sure your layout file is named register.xml
+        setContentView(R.layout.register);
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(android.R.id.content), (v, insets) -> {
@@ -69,8 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
         setListeners();
     }
 
-    // ── View binding ──────────────────────────────────────────────────────────
-
     private void bindViews() {
         etFirstName       = findViewById(R.id.etFirstName);
         etLastName        = findViewById(R.id.etLastName);
@@ -81,18 +72,13 @@ public class RegisterActivity extends AppCompatActivity {
         tvBackToLogin     = findViewById(R.id.tvBackToLogin);
     }
 
-    // ── Listeners ─────────────────────────────────────────────────────────────
-
     private void setListeners() {
         btnRegister.setOnClickListener(v -> attemptRegister());
-
         tvBackToLogin.setOnClickListener(v -> {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
         });
     }
-
-    // ── Registration logic ────────────────────────────────────────────────────
 
     private void attemptRegister() {
         String firstName  = etFirstName.getText().toString().trim();
@@ -101,7 +87,6 @@ public class RegisterActivity extends AppCompatActivity {
         String password   = etPassword.getText().toString();
         String confirmPwd = etConfirmPassword.getText().toString();
 
-        // ── local validation ─────────────────────────────────────────────────
         if (TextUtils.isEmpty(firstName)) {
             etFirstName.setError("First name is required");
             etFirstName.requestFocus();
@@ -140,20 +125,19 @@ public class RegisterActivity extends AppCompatActivity {
 
         setLoading(true);
 
-        // ── build JSON body ──────────────────────────────────────────────────
-        // We pass first_name + last_name inside the `data` object so they land
-        // in auth.users.raw_user_meta_data and can later be synced to `customers`.
+        // ── Send email + password to Supabase Auth ────────────────────────────
+        // Supabase hashes the password automatically using bcrypt.
+        // We never touch the plain text password after this point.
         JSONObject body = new JSONObject();
         try {
             body.put("email",    email);
-            body.put("password", password);
+            body.put("password", password); // Supabase hashes this — we never store it ourselves
 
             JSONObject meta = new JSONObject();
             meta.put("first_name", firstName);
             meta.put("last_name",  lastName);
             meta.put("full_name",  firstName + " " + lastName);
-            meta.put("role",       "resident");   // default role
-
+            meta.put("role",       "resident");
             body.put("data", meta);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -191,33 +175,22 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    // ── Post-registration ─────────────────────────────────────────────────────
-
-    /**
-     * Called after a successful /auth/v1/signup response.
-     *
-     * If "email confirmations" are enabled in Supabase the response will NOT
-     * contain an access_token yet — the user must click the confirmation email.
-     * If they are disabled, the token is returned immediately.
-     */
     private void onRegistrationSuccess(String responseBody) {
         try {
-            JSONObject json = new JSONObject(responseBody);
-            String accessToken = json.optString("access_token", "");
-            String userId = json.optJSONObject("user") != null
-                    ? json.getJSONObject("user").optString("id", "")
-                    : "";
+            JSONObject json        = new JSONObject(responseBody);
+            String     accessToken = json.optString("access_token", "");
+            String     userId      = json.optJSONObject("user") != null
+                    ? json.getJSONObject("user").optString("id", "") : "";
 
-            // ── Insert into customers table directly ──
             if (!userId.isEmpty()) {
                 insertCustomerRecord(userId, accessToken);
             } else {
-                // If no userId, something went wrong with the response structure
-                Toast.makeText(this, "Registration successful, but profile could not be created.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        "Registration successful! Please check your email to confirm your account.",
+                        Toast.LENGTH_LONG).show();
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                 finish();
             }
-
         } catch (JSONException e) {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
@@ -228,47 +201,39 @@ public class RegisterActivity extends AppCompatActivity {
         String firstName = etFirstName.getText().toString().trim();
         String lastName  = etLastName.getText().toString().trim();
         String email     = etEmail.getText().toString().trim();
-        String password  = etPassword.getText().toString(); // Added to match your table
 
+        // ⚠️ Password is intentionally NOT inserted here.
+        // Supabase Auth stores a bcrypt hash of the password in auth.users internally.
+        // Storing it again in the customers table (even hashed) is redundant and insecure.
         JSONObject body = new JSONObject();
         try {
-            // Matching the columns visible in your screenshot exactly
             body.put("customer_id", userId);
-            body.put("password",    password); // Included because it exists in your customers table
             body.put("full_name",   firstName + " " + lastName);
             body.put("email",       email);
-
+            body.put("role",        "resident");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Request.Builder requestBuilder = new Request.Builder()
                 .url(SUPABASE_URL + "/rest/v1/customers")
-                .addHeader("apikey",        SUPABASE_ANON)
-                .addHeader("Content-Type",  "application/json")
-                .addHeader("Prefer",        "return=minimal")
+                .addHeader("apikey",       SUPABASE_ANON)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Prefer",       "return=minimal")
                 .post(RequestBody.create(body.toString(), JSON));
 
-        if (!accessToken.isEmpty()) {
-            requestBuilder.addHeader("Authorization", "Bearer " + accessToken);
-        } else {
-            // If no access token (email confirmation on), try using the anon key as a bearer token
-            // This requires an RLS policy that allows 'anon' role to insert.
-            requestBuilder.addHeader("Authorization", "Bearer " + SUPABASE_ANON);
-        }
+        // Use the user's own token if available (preferred), otherwise fall back to anon key
+        requestBuilder.addHeader("Authorization",
+                "Bearer " + (!accessToken.isEmpty() ? accessToken : SUPABASE_ANON));
 
-        Request request = requestBuilder.build();
-
-        http.newCall(request).enqueue(new Callback() {
+        http.newCall(requestBuilder.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 android.util.Log.e("SUPABASE_INSERT", "Network error: " + e.getMessage());
                 runOnUiThread(() -> {
                     Toast.makeText(RegisterActivity.this,
-                            "Account created but profile save failed.",
-                            Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                    finish();
+                            "Account created but profile save failed.", Toast.LENGTH_LONG).show();
+                    goToLogin();
                 });
             }
 
@@ -278,25 +243,22 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     android.util.Log.e("SUPABASE_INSERT", "Error " + response.code() + ": " + errorBody);
                 }
-
                 runOnUiThread(() -> {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this,
-                                "Account and profile created successfully!",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        // This usually happens due to Row Level Security (RLS) or schema mismatch
-                        Toast.makeText(RegisterActivity.this,
-                                "Account created! (Profile record pending)",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                    finish();
+                    Toast.makeText(RegisterActivity.this,
+                            response.isSuccessful()
+                                    ? "Account created successfully!"
+                                    : "Account created! (Profile record pending)",
+                            Toast.LENGTH_LONG).show();
+                    goToLogin();
                 });
             }
         });
     }
-    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private void goToLogin() {
+        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+        finish();
+    }
 
     private void handleAuthError(String responseBody) {
         try {
